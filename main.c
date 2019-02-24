@@ -1,3 +1,7 @@
+
+/*so as funcoes de leitura*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 
