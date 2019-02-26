@@ -18,6 +18,8 @@ typedef struct Nodee {
     int device; // nº(indice) do device presente no node(place)
 }Node;
 
+int best; // variável onde se vai guardar o melhor nº de colisões, depois também vai ser preciso guardar o inicio e fim de cada collider para validação
+
 int main()
 {
 
@@ -45,7 +47,25 @@ int main()
         printf("Coordenadas dos colliders (inicio e fim): %d %d\n", coliders[i][0], coliders[i][1]);
     }
 
-
     return 0;
 }
 
+// backtrackin dos slides, pseudocódigo
+int backtracking(s){
+    if reject(s) = true then // caso de rejeição, se o nº de interceções ultrapassar o best
+        return false
+    if accept(s) = true then // caso base, se todos os devices já foram colocados; ou se tivermos menos de 4 devices retornamos 0 aqui (?)
+        output(s)
+        return true
+    while condition(s) = true do // dois ciclos for?
+        s′ = update(s)  // novo candidato
+        if BT(s′) = true then // passo recursivo
+        return true 
+    return false
+}
+
+// Função que devolve 1 se os dois colliders se interceptarem
+// Caso contrário devolve 0
+int intercept(int x1, int y1, int x2, int y2){
+
+}
