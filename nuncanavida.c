@@ -47,9 +47,9 @@ int main()
         scanf("%d %d", &(locais[i].x), &(locais[i].y));
     }
     // Ciclo para imprimir as coordenadas dos lugares
-//    for(int i=0; i<nPontos; i++) {
-//        printf("Coordenadas dos pontos: %d %d\n", locais[i].x, locais[i].y);
-//    }
+    //    for(int i=0; i<nPontos; i++) {
+    //        printf("Coordenadas dos pontos: %d %d\n", locais[i].x, locais[i].y);
+    //    }
     
     // guardar nDispositivos e coliders
     int nDispositivos;
@@ -60,17 +60,19 @@ int main()
         scanf("%d %d", &(coliders[i][0]), &(coliders[i][1]));
     }
     // Ciclo para imprimir as coordenadas dos colliders
-//    for(int i=0; i<nColiders; i++) {
-//        printf("Coordenadas dos colliders (inicio e fim): %d %d\n", coliders[i][0], coliders[i][1]);
-//    }
-//
+    //    for(int i=0; i<nColiders; i++) {
+    //        printf("Coordenadas dos colliders (inicio e fim): %d %d\n", coliders[i][0], coliders[i][1]);
+    //    }
+    //
     int disp[nDispositivos]; //vai guardar os indices dos lugares dos dispositivos
     for(int i=0;i<nDispositivos;i++){
         disp[i]=-1;
     }
     best = nColiders*nColiders;
-    int visit[nDispositivos];
-    
+    int visit[nPontos];
+    for(int i=0;i<nPontos;i++){
+        visit[i]=0;
+    }
     backtracking(locais, coliders, disp, nPontos, nColiders,  nDispositivos,  0,  0, visit);
     
     printf("Best: %d",best);
@@ -86,31 +88,35 @@ int backtracking(Ponto *locais,int (*coliders)[2],
         printf("%d ",disp[i]);
     }
     printf("\n");
+    printf("Visit: ");
+    for(int i=0;i<nPontos;i++){
+        printf("%d ",visit[i]);
+    }
     if (counter > best){ // caso de rejeição, se o nº de interceções ultrapassar o best
-        printf("Best: %d",best);
+        printf("\nfoi aqui que me foderam\n");
         return best;
     }
     
     if (iterador == nDispositivos) { //chego ao fim do ramo e tenho o melhor caso ou igual
         best=counter;
-        printf("Entrei no final do ramo: %d",best);
+        
+        printf("ou entao aquieeeee\n");
         return best;
     }
     
     int i;
     for(i = 0; i<nPontos; i++) {
-        //if(visit[i] == 0) { //caso nao tenha sido visitado
+        if(visit[i] == 0) { //caso nao tenha sido visitado
             visit[i] = 1;
             disp[iterador] = i; //colocar o local no dispositivo (ATENCAO QUE 0=1)
             //calcula intersecoes, tirem se quiserem FDS
             counter = intersectGlobal(coliders, disp,locais,nColiders);
             backtracking(locais, coliders, disp, nPontos, nColiders, nDispositivos, iterador+1, counter, visit);
             visit[i] = 0;
-        //}
+            disp[iterador] = -1;
+        }
     }
-    
     return counter;
-    
 }
 
 int intersectGlobal(int (*coliders)[2], int *disp, Ponto *locais,int nColiders) {
@@ -126,7 +132,6 @@ int intersectGlobal(int (*coliders)[2], int *disp, Ponto *locais,int nColiders) 
         }
     }
     return acum;
-    
 }
 
 // Função que devolve 1 se os dois colliders se interceptarem
