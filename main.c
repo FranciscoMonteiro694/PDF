@@ -10,8 +10,7 @@ int intersectGlobal( int (*coliders)[2], int *disp, Ponto *locais,int nColiders,
 int orientation(Ponto p, Ponto q, Ponto r);
 int intersect(Ponto p1, Ponto p2, Ponto t1, Ponto t2);
 int onSegment(Ponto p, Ponto q, Ponto r);
-int backtracking(Ponto *locais,int (*coliders)[2],
-                 int *disp,int nPontos,int nColiders,int nDispositivos,int iterador,int counter, int *visit);
+int backtracking(Ponto *locais,int (*coliders)[2],int *disp,int nPontos,int nColiders,int nDispositivos,int iterador,int counter, int *visit);
 int best; // variavel onde se vai guardar o melhor n de colisoes, depois tambem vai ser preciso guardar o inicio e fim de cada collider para validacao
 
 int temp;
@@ -75,7 +74,7 @@ int main()
     }
     backtracking(locais, coliders, disp, nPontos, nColiders,  nDispositivos,  0,  0, visit);
 
-    printf("%d",best);
+    printf("%d\n",best);
 //    printf("Tempo gasto: %f\n",total);
     return 0;
 }
@@ -83,6 +82,9 @@ int main()
 // backtracking, pseudocodigo
 int backtracking(Ponto *locais,int (*coliders)[2],
                  int *disp,int nPontos,int nColiders,int nDispositivos,int iterador,int counter, int *visit){
+    if(best == 0) {
+        return best;
+    }
 
     if (counter > best){ // caso de rejeicao, se o n de intercecoes ultrapassar o best
         return best;
@@ -100,12 +102,6 @@ int backtracking(Ponto *locais,int (*coliders)[2],
         if(visit[i] == 0) { //caso nao tenha sido visitado
             visit[i] = 1;
             disp[iterador] = i; //colocar o local no dispositivo (ATENCAO QUE 0=1)
-//            if(disp[3]!=-1) {
-//                temp = intersectGlobal(coliders, disp, locais, nColiders, iterador);
-//            } else {
-//                counter = 0;
-//                temp = 0;
-//            }
             //counter += temp;
 //            printf("Conteudo: ");
 //            for(int i=0;i<nDispositivos;i++){
@@ -117,8 +113,8 @@ int backtracking(Ponto *locais,int (*coliders)[2],
 //                printf("%d ",visit[i]);
 //            }
 //
-//printf("\nIntersecoes: %d\n", counter+temp);
-//printf("\n");
+            //printf("\nIntersecoes: %d\n", counter+temp);
+            //printf("\n");
             temp = intersectGlobal(coliders, disp, locais, nColiders, iterador);
             backtracking(locais, coliders, disp, nPontos, nColiders, nDispositivos, iterador+1, counter + temp, visit);
             visit[i] = 0;
@@ -135,13 +131,12 @@ int intersectGlobal(int (*coliders)[2], int *disp, Ponto *locais, int nColiders,
     for(i=0; i<nColiders; i++) {
         if(coliders[i][0] == iterador +1 || coliders[i][1] == iterador +1){
             if(disp[coliders[i][0]-1] != (-1) && disp[coliders[i][1]-1] != (-1)) {
-               //printf("primeiro cralhes\n");
                 for(j=0; j<nColiders; j++) {
                     if(i!=j){
-                        //printf("segundo cralhes\n");
                         if(disp[coliders[j][0]-1] != (-1) && disp[coliders[j][1]-1] != (-1)) {
-                            //printf("terceiro cralhes\n");
-                            acum += intersect(locais[disp[coliders[i][0]-1]], locais[disp[coliders[i][1]-1]], locais[disp[coliders[j][0]-1]], locais[disp[coliders[j][1]-1]]);
+                            if((coliders[j][0] != coliders[i][0]) && (coliders[j][1] != coliders[i][0]) && (coliders[i][1] != coliders[j][0]) && (coliders[i][1] != coliders[j][1])){
+                                acum += intersect(locais[disp[coliders[i][0]-1]], locais[disp[coliders[i][1]-1]], locais[disp[coliders[j][0]-1]], locais[disp[coliders[j][1]-1]]);
+                            }
                         }
                     }
                 }
@@ -151,12 +146,18 @@ int intersectGlobal(int (*coliders)[2], int *disp, Ponto *locais, int nColiders,
 //    end = clock();
 //    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 //    total+=cpu_time_used;
+   // printf("%d\n\n", acum);
     return acum;
 }
 
 // Funcao que devolve 1 se os dois colliders se interceptarem
 // Caso contrario devolve 0
 int intersect(Ponto p1, Ponto t1, Ponto p2, Ponto t2) {  //recebe 4 pontos (duas linhas) e verifica intersecao
+
+//    if((t1.x == t2.x && t1.y == t2.y) || (p1.x == p2.x && p1.y == p2.y)){
+//        //printf("tamu juntos\n");
+//        return 0;
+//    }
 
     //orientacao entre os nos de forma a descobrir se esta a cada ponto a esquerda/direita da linha
     int o1 = orientation(p1, t1, p2);
@@ -171,6 +172,8 @@ int intersect(Ponto p1, Ponto t1, Ponto p2, Ponto t2) {  //recebe 4 pontos (duas
         }
         return 1;
     }
+
+
 
     // p1, q1 and p2 are colinear and p2 lies on segment p1q1
     if (o1 == 0 && onSegment(p1, p2, t1) == 1) {
