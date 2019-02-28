@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 typedef struct Pontoo {
     int x; // coordenada x do ponto
@@ -15,6 +16,13 @@ int backtracking(Ponto *locais,int (*coliders)[2],
                  int *disp,int nPontos,int nColiders,int nDispositivos,int iterador,int counter, int *visit);
 int best; // variavel onde se vai guardar o melhor n de colisoes, depois tambem vai ser preciso guardar o inicio e fim de cada collider para validacao
 
+
+
+clock_t start, end;
+double cpu_time_used;
+double total;
+     
+     
 int max2(int a, int b) {
     if ((a) > (b)) {
         return a;
@@ -31,13 +39,13 @@ int min2(int a, int b) {
 
 int main()
 {
-    
+    total=0;
     // Guardar numero de locais e coordenadas x,y
     int nPontos;
     int i;
     scanf("%d", &nPontos);
     Ponto locais[nPontos];
-    for(int i=0; i<nPontos; i++) {
+    for(i=0; i<nPontos; i++) {
         scanf("%d %d", &(locais[i].x), &(locais[i].y));
     }
     // Ciclo para imprimir as coordenadas dos lugares
@@ -70,6 +78,7 @@ int main()
     backtracking(locais, coliders, disp, nPontos, nColiders,  nDispositivos,  0,  0, visit);
     
     printf("%d",best);
+    printf("Tempo gasto: %f\n",total);
     return 0;
 }
 
@@ -114,6 +123,7 @@ int backtracking(Ponto *locais,int (*coliders)[2],
 }
 
 int intersectGlobal(int (*coliders)[2], int *disp, Ponto *locais,int nColiders) {
+    start = clock();
     int i, j;
     int acum = 0;
     for(i=0; i<nColiders-1; i++) {
@@ -125,6 +135,9 @@ int intersectGlobal(int (*coliders)[2], int *disp, Ponto *locais,int nColiders) 
             }
         }
     }
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    total+=cpu_time_used;
     return acum;
 }
 
