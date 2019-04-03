@@ -30,7 +30,7 @@ int main(int argc, const char * argv[]) {
     }
     // Criar tabela para guardar os valores
     int tabela[nEventos+1][max+1]; // O +1 é por causa das linhas só com 0's
-    profit(nEventos,max,tabela);
+    printf("%d\n",profit(nEventos,max,tabela));
     return 0;
 }
 
