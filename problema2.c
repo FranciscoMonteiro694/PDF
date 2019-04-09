@@ -6,6 +6,7 @@
 //  Copyright © 2019 Francisco Monteiro. All rights reserved.
 //
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct Eventoo {
     int deadline;
@@ -14,13 +15,24 @@ typedef struct Eventoo {
 }Evento;
 
 // Headers
-int profit(int nEventos,int maxDeadline,int tabela[nEventos+1][maxDeadline+1],Evento eventos[nEventos]);
-void imprimir(int nEventos, int maxDeadline,int tabela[nEventos+1][maxDeadline+1]);
+int profit(int nEventos,int maxDeadline,int **tabela,Evento * eventos);
+void imprimir(int nEventos, int maxDeadline,int **tabela);
 int max(int v1, int v2);
 void swap(Evento *x,Evento *y);
-void quicksort(Evento eventos[],int m,int nEventos);
+void quicksort(Evento *eventos,int m,int nEventos);
 int choose_pivot(int i,int j);
-
+void verificaSol(int **tabela,int nEventos, int maxDeadline,Evento *eventos);
+int checklinha(int valor,int **tabela,int maxDeadline,int nEventos);
+void imprimeSol(Evento *eventos,int indice,int startTime);
+/*
+6
+9 1 4
+7 3 2
+7 4 5
+4 1 3
+4 1 1
+4 3 4
+*/
 
 int main(int argc, const char * argv[]) {
     // Guardar numero de eventos
@@ -28,24 +40,33 @@ int main(int argc, const char * argv[]) {
     int i,max;
     max=0;
     scanf("%d", &nEventos);
-    Evento eventos[nEventos];
+    Evento *eventos;
+    eventos=(Evento*)malloc(sizeof(Evento)*nEventos);
     for(i=0; i<nEventos; i++) {
         scanf("%d %d %d", &(eventos[i].deadline), &(eventos[i].duracao), &(eventos[i].lucro));
-        if(eventos[i].deadline>max)
-            max=eventos[i].deadline;
     }
-    // Criar tabela para guardar os valores
-    int tabela[nEventos+1][max+1];
+    quicksort(eventos,0, nEventos-1);
+    max=eventos[nEventos-1].deadline;
+    int **tabela;
+    tabela= (int**)malloc(sizeof(int*)*(nEventos+1));
+    for (i=0;i<nEventos+1;i++){
+        tabela[i]=(int*)malloc(sizeof(int)*(max+1));
+    }
     // Ordenar por deadline
-    quicksort(eventos,0, nEventos);
-    printf("%d\n",profit(nEventos,max,tabela,eventos));
     
-    // Para ver se a Tabela
-    //imprimir(nEventos,max,tabela);
+    printf("%d\n",profit(nEventos,max,tabela,eventos));
+    // Para ver a Tabela
+    // imprimir(nEventos,max,tabela);
+    verificaSol(tabela,nEventos,max,eventos);
+    free(eventos);
+    for (i=0;i<nEventos+1;i++){
+        free(tabela[i]);
+    }
+    free(tabela);
     return 0;
 }
-// Função para teste
-void imprimir(int nEventos, int maxDeadline,int tabela[nEventos+1][maxDeadline+1]){
+// Função para debug
+void imprimir(int nEventos, int maxDeadline,int **tabela){
     printf("Conteúdo da tabela\n");
     int i,j;
     for(i=0;i<nEventos+1;i++){
@@ -56,7 +77,7 @@ void imprimir(int nEventos, int maxDeadline,int tabela[nEventos+1][maxDeadline+1
     }
     printf("------############------\n");
 }
-int profit(int nEventos, int maxDeadline,int tabela[nEventos+1][maxDeadline+1],Evento eventos[nEventos]){
+int profit(int nEventos, int maxDeadline,int **tabela,Evento *eventos){
     int iE,iD;
     // Inicializar a primeira coluna a 0
     for(iE=0;iE<nEventos+1;iE++){
@@ -84,13 +105,56 @@ int profit(int nEventos, int maxDeadline,int tabela[nEventos+1][maxDeadline+1],E
     // Vai devolver o último elemento que vai conter o resultado certo
     return tabela[nEventos][maxDeadline];
 }
+void verificaSol(int **tabela,int nEventos, int maxDeadline,Evento *eventos){
+    int iE,iD;
+    int aux;
+    int colAux,colAux2=0;
+    // Último valor da tabela
+    aux = tabela[nEventos][maxDeadline];
+    // Linhas
+    for(iE=nEventos;iE>=0;iE--){
+        // Colunas
+        for(iD=maxDeadline;iD>=0;iD--){
+            colAux=checklinha(aux, tabela,maxDeadline,iE);
+            if(colAux==-1){ // Se não encontrou o indice na linha, imprime
+                imprimeSol(eventos, iE+1, colAux2);
+                aux=aux-eventos[iE+1].lucro;
+                //iE+=1;
+            }
+            else{
+                colAux2=colAux;
+            
+            }
+        }
+        
+    }
+}
+
+int checklinha(int valor,int **tabela,int maxDeadline,int nEventos){
+    int col;
+    for(col=0;col<maxDeadline;col++){
+        if(valor==tabela[nEventos][col])
+            return col;
+    }
+    return -1;
+}
+
+void imprimeSol(Evento *eventos,int indice,int startTime){
+    // Tenho de substituir depois para imprimir tudo na mesma linha
+    // Verificar indices!
+    printf("Indice do evento: %d\n",indice);
+    printf("Starting time: %d\n",startTime);
+    printf("Ending time: %d\n",startTime+eventos[indice-1].duracao);
+    printf("Deadline: %d\n",eventos[indice-1].deadline);
+    printf("Profit: %d\n",eventos[indice-1].lucro);
+}
 
 /*
  Créditos quicksort
  
  http://www.zentut.com/c-tutorial/c-quicksort-algorithm/
  */
-void quicksort(Evento eventos[],int m,int nEventos)
+void quicksort(Evento *eventos,int m,int nEventos)
 {
     int key,i,j,k;
     if( m < nEventos)
