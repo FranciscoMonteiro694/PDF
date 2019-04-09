@@ -55,9 +55,10 @@ int main(int argc, const char * argv[]) {
     // Ordenar por deadline
     
     printf("%d\n",profit(nEventos,max,tabela,eventos));
-    // Para ver a Tabela
-    // imprimir(nEventos,max,tabela);
+    
     verificaSol(tabela,nEventos,max,eventos);
+    // Para ver a Tabela
+    imprimir(nEventos,max,tabela);
     free(eventos);
     for (i=0;i<nEventos+1;i++){
         free(tabela[i]);
@@ -106,7 +107,7 @@ int profit(int nEventos, int maxDeadline,int **tabela,Evento *eventos){
     return tabela[nEventos][maxDeadline];
 }
 void verificaSol(int **tabela,int nEventos, int maxDeadline,Evento *eventos){
-    int iE,iD;
+    int iE;
     int aux;
     int colAux,colAux2=0;
     // Último valor da tabela
@@ -114,18 +115,17 @@ void verificaSol(int **tabela,int nEventos, int maxDeadline,Evento *eventos){
     // Linhas
     for(iE=nEventos;iE>=0;iE--){
         // Colunas
-        for(iD=maxDeadline;iD>=0;iD--){
             colAux=checklinha(aux, tabela,maxDeadline,iE);
-            if(colAux==-1){ // Se não encontrou o indice na linha, imprime
+            if(colAux==-1){ // Se não encontrou o valor na linha, imprime
                 imprimeSol(eventos, iE+1, colAux2);
-                aux=aux-eventos[iE+1].lucro;
+                aux=aux-eventos[iE].lucro;//aqui
                 //iE+=1;
             }
             else{
                 colAux2=colAux;
             
             }
-        }
+        
         
     }
 }
