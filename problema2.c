@@ -23,7 +23,7 @@ void quicksort(Evento *eventos,int m,int nEventos);
 int choose_pivot(int i,int j);
 void verificaSol(int **tabela,int nEventos, int maxDeadline,Evento *eventos);
 int checklinha(int valor,int **tabela,int maxDeadline,int nEventos);
-void imprimeSol(Evento *eventos,int indice,int startTime);
+void imprimeSol(Evento *eventos,int indice,int time,int flag);
 /*
 6
 9 1 4
@@ -46,6 +46,10 @@ int main(int argc, const char * argv[]) {
         scanf("%d %d %d", &(eventos[i].deadline), &(eventos[i].duracao), &(eventos[i].lucro));
     }
     quicksort(eventos,0, nEventos-1);
+    printf("Conteudo ordenado dos eventos\n");
+    for(i=0; i<nEventos; i++) {
+        printf("%d %d %d\n", eventos[i].deadline,eventos[i].duracao,eventos[i].lucro);
+    }
     max=eventos[nEventos-1].deadline;
     int **tabela;
     tabela= (int**)malloc(sizeof(int*)*(nEventos+1));
@@ -110,6 +114,7 @@ void verificaSol(int **tabela,int nEventos, int maxDeadline,Evento *eventos){
     int iE;
     int aux;
     int colAux,colAux2=0;
+    int flag=0;
     // Último valor da tabela
     aux = tabela[nEventos][maxDeadline];
     // Linhas
@@ -117,11 +122,11 @@ void verificaSol(int **tabela,int nEventos, int maxDeadline,Evento *eventos){
         // Colunas
             colAux=checklinha(aux, tabela,maxDeadline,iE);
             if(colAux==-1){ // Se não encontrou o valor na linha, imprime
-                imprimeSol(eventos, iE+1, colAux2);
+                imprimeSol(eventos, iE+1, colAux2,flag);
+                flag=1;
                 aux=aux-eventos[iE].lucro;//aqui
-                //iE+=1;
             }
-            else{
+            else{ // Se encontrou
                 colAux2=colAux;
             
             }
@@ -139,14 +144,23 @@ int checklinha(int valor,int **tabela,int maxDeadline,int nEventos){
     return -1;
 }
 
-void imprimeSol(Evento *eventos,int indice,int startTime){
+void imprimeSol(Evento *eventos,int indice,int time,int flag){
     // Tenho de substituir depois para imprimir tudo na mesma linha
     // Verificar indices!
-    printf("Indice do evento: %d\n",indice);
-    printf("Starting time: %d\n",startTime);
-    printf("Ending time: %d\n",startTime+eventos[indice-1].duracao);
-    printf("Deadline: %d\n",eventos[indice-1].deadline);
-    printf("Profit: %d\n",eventos[indice-1].lucro);
+    if (flag==0){ // Veio start time
+        printf("Indice do evento: %d\n",indice);
+        printf("Starting time: %d\n",time);
+        printf("Ending time: %d\n",time+eventos[indice-1].duracao);
+        printf("Deadline: %d\n",eventos[indice-1].deadline);
+        printf("Profit: %d\n",eventos[indice-1].lucro);
+    }
+    else{
+        printf("Indice do evento: %d\n",indice);
+        printf("Starting time: %d\n",time-eventos[indice-1].duracao);
+        printf("Ending time: %d\n",time);
+        printf("Deadline: %d\n",eventos[indice-1].deadline);
+        printf("Profit: %d\n",eventos[indice-1].lucro);
+    }
 }
 
 /*
