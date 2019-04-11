@@ -32,6 +32,14 @@ void imprimeSol(Evento *eventos,int indice,int time,int flag);
 4 1 3
 4 1 1
 4 3 4
+ 
+6
+4 3 1
+5 2 1
+6 5 2
+7 2 1
+7 2 1
+7 2 1
 */
 
 int main(int argc, const char * argv[]) {
@@ -125,10 +133,13 @@ void verificaSol(int **tabela,int nEventos, int maxDeadline,Evento *eventos){
                 imprimeSol(eventos, iE+1, colAux2,flag);
                 flag=1;
                 aux=aux-eventos[iE].lucro;//aqui
+                colAux2=checklinha(aux, tabela,maxDeadline,iE);
             }
             else{ // Se encontrou
                 colAux2=colAux;
-            
+                if(iE!=nEventos){
+                    flag=1;
+                }
             }
         
         
@@ -137,7 +148,7 @@ void verificaSol(int **tabela,int nEventos, int maxDeadline,Evento *eventos){
 
 int checklinha(int valor,int **tabela,int maxDeadline,int nEventos){
     int col;
-    for(col=0;col<maxDeadline;col++){
+    for(col=0;col<maxDeadline+1;col++){
         if(valor==tabela[nEventos][col])
             return col;
     }
