@@ -1,10 +1,3 @@
-//
-//  main.c
-//  Problema2
-//
-//  Created by Francisco Monteiro on 02/04/2019.
-//  Copyright © 2019 Francisco Monteiro. All rights reserved.
-//
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -24,6 +17,16 @@ int choose_pivot(int i,int j);
 void verificaSol(int **tabela,int nEventos, int maxDeadline,Evento *eventos);
 int checklinha(int valor,int **tabela,int maxDeadline,int nEventos);
 void imprimeSol(Evento *eventos,int indice,int time,int flag);
+
+/* Função de Validação
+ 
+ 
+ Para utilizar a função de validação descomentar a linha 70
+ 
+ 
+ 
+ 
+*/
 /*
 6
 9 1 4
@@ -54,10 +57,6 @@ int main(int argc, const char * argv[]) {
         scanf("%d %d %d", &(eventos[i].deadline), &(eventos[i].duracao), &(eventos[i].lucro));
     }
     quicksort(eventos,0, nEventos-1);
-    printf("Conteudo ordenado dos eventos\n");
-    for(i=0; i<nEventos; i++) {
-        printf("%d %d %d\n", eventos[i].deadline,eventos[i].duracao,eventos[i].lucro);
-    }
     max=eventos[nEventos-1].deadline;
     int **tabela;
     tabela= (int**)malloc(sizeof(int*)*(nEventos+1));
@@ -68,9 +67,9 @@ int main(int argc, const char * argv[]) {
     
     printf("%d\n",profit(nEventos,max,tabela,eventos));
     
-    verificaSol(tabela,nEventos,max,eventos);
+    //verificaSol(tabela,nEventos,max,eventos);
     // Para ver a Tabela
-    imprimir(nEventos,max,tabela);
+    //imprimir(nEventos,max,tabela);
     free(eventos);
     for (i=0;i<nEventos+1;i++){
         free(tabela[i]);
