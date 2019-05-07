@@ -36,6 +36,7 @@ int main(int argc, const char * argv[]) {
                 scanf("%d",&grafo[i][j-1]);
             }
         }
+        //printf("Dist mais pequena %d \n",indDistMaisPequena(grafo,i,n));
     }
     /*
     printf("Conteudo do grafo\n");
@@ -53,15 +54,17 @@ int main(int argc, const char * argv[]) {
     distance[0]=0;
     for (i=1;i<n;i++){
         distance[i]=999999;
+        
     }
     visited=(int*)malloc(sizeof(int)*n);
     visited[0]=1;
     for (i=1;i<n;i++){
         visited[i]=0;
+        
     }
     u=0;
     while(visitednotEmpty(visited,n)){
-        printf("Estamos no nó %d\n",u);
+        //printf("Estamos no nó %d\n",u);
         u=indDistMaisPequena(grafo,u,n)+1;
         visited[u]=1;
         if (u==final){
@@ -95,7 +98,7 @@ int indDistMaisPequena(int **tabela,int nrLinha,int size){
     ind=0;
     minAtual=999999;
     for(i=0;i<size;i++){
-        if(minAtual>tabela[nrLinha][i] && tabela[nrLinha][i]!=-1){
+        if(minAtual>tabela[nrLinha][i] && tabela[nrLinha][i]>0){
             minAtual=tabela[nrLinha][i];
             ind=i;
         }
