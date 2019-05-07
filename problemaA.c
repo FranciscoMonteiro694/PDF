@@ -54,27 +54,24 @@ int main(int argc, const char * argv[]) {
     for (i=1;i<n;i++){
         distance[i]=999999;
     }
-    printf("Passei 1\n");
     visited=(int*)malloc(sizeof(int)*n);
     visited[0]=1;
     for (i=1;i<n;i++){
         visited[i]=0;
     }
-    printf("Passei 2\n");
-    u=1;
+    u=0;
     while(visitednotEmpty(visited,n)){
-        printf("Passei 3 u=%d \n",u);
+        printf("Estamos no nó %d\n",u);
         u=indDistMaisPequena(grafo,u,n)+1;
         visited[u]=1;
         if (u==final){
             break;
         }
         for(i=0;i<n;i++){
-            if(distance[i]>distance[u]+grafo[i][u]){
+            if(distance[i]>distance[u]+grafo[i][u] && grafo[i][u] >0  && visited[i]==0){
                 distance[i]=distance[u]+grafo[i][u];
             }
         }
-        printf("Passei 4\n");
     }
     printf("Valor final %d\n",distance[final-1]);
     for(i=0;i<n;i++){
@@ -83,7 +80,8 @@ int main(int argc, const char * argv[]) {
     
 }
 
-// Devolve 1 se não estiver vazia
+// Devolve 1 se ainda for para continuar o ciclo
+// 1 quer dizer que foi visitado
 int visitednotEmpty(int *visited, int n){
     int i;
     for(i=0;i<n;i++){
