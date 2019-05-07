@@ -1,10 +1,3 @@
-//
-//  main.c
-//  ProblemaA
-//
-//  Created by Francisco Monteiro on 06/05/2019.
-//  Copyright © 2019 Francisco Monteiro. All rights reserved.
-//
 /*
 6 6
 1 0 1 2 8 -1 -1
@@ -18,6 +11,7 @@
 #include <stdlib.h>
 int visitednotEmpty(int *visited, int n);
 int indDistMaisPequena(int **tabela,int nrLinha,int size);
+int funcaonova(int *distancias,int n,int *visited);
 int main(int argc, const char * argv[]) {
     int n,final;
     int ignorar;
@@ -36,19 +30,7 @@ int main(int argc, const char * argv[]) {
                 scanf("%d",&grafo[i][j-1]);
             }
         }
-        //printf("Dist mais pequena %d \n",indDistMaisPequena(grafo,i,n));
     }
-    /*
-    printf("Conteudo do grafo\n");
-    for(i=0;i<n;i++){
-        for(j=0;j<n;j++){
-            printf("%d    ",grafo[i][j]);
-        }
-        printf("\n");
-    }
-    return 0;
-     */
-    
     int *distance,*visited,u;
     distance=(int*)malloc(sizeof(int)*n);
     distance[0]=0;
@@ -62,29 +44,24 @@ int main(int argc, const char * argv[]) {
         visited[i]=0;
         
     }
-    u=0;
+    u=1;
     while(visitednotEmpty(visited,n)){
-        //printf("Estamos no nó %d\n",u);
-        u=indDistMaisPequena(grafo,u,n)+1;
+        u=funcaonova(distance,n,visited);
         visited[u]=1;
         if (u==final){
             break;
         }
         for(i=0;i<n;i++){
-            if(distance[i]>distance[u]+grafo[i][u] && grafo[i][u] >0  && visited[i]==0){
-                distance[i]=distance[u]+grafo[i][u];
+            if(distance[i]>distance[u]+grafo[u][i] && grafo[u][i] >0  && visited[i]==0){
+                distance[i]=distance[u]+grafo[u][i];
             }
         }
     }
-    printf("Valor final %d\n",distance[final-1]);
-    for(i=0;i<n;i++){
-        printf("%d \n",distance[i]);
-    }
+    printf("%d\n",distance[final-1]);
+
     
 }
 
-// Devolve 1 se ainda for para continuar o ciclo
-// 1 quer dizer que foi visitado
 int visitednotEmpty(int *visited, int n){
     int i;
     for(i=0;i<n;i++){
@@ -100,6 +77,20 @@ int indDistMaisPequena(int **tabela,int nrLinha,int size){
     for(i=0;i<size;i++){
         if(minAtual>tabela[nrLinha][i] && tabela[nrLinha][i]>0){
             minAtual=tabela[nrLinha][i];
+            ind=i;
+        }
+    }
+    
+    return ind;
+}
+
+int funcaonova(int *distancias,int n,int *visited){
+    int i,minAtual,ind;
+    ind=0;
+    minAtual=999999;
+    for(i=0;i<n;i++){
+        if(minAtual>distancias[i] && distancias[i]>0 && visited[i]!=1){
+            minAtual=distancias[i];
             ind=i;
         }
     }
