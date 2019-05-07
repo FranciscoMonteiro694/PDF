@@ -15,8 +15,10 @@ int funcaonova(int *distancias,int n,int *visited);
 int main(int argc, const char * argv[]) {
     int n,final;
     int ignorar;
-    scanf("%d %d",&n,&final);
     int **grafo,i,j;
+    int *distance,*visited,u;
+    scanf("%d %d",&n,&final);
+    
     grafo=(int**)malloc(sizeof(int*)*n);
     for (i=0;i<n;i++){
         grafo[i]=(int*)malloc(sizeof(int)*n);
@@ -31,7 +33,6 @@ int main(int argc, const char * argv[]) {
             }
         }
     }
-    int *distance,*visited,u;
     distance=(int*)malloc(sizeof(int)*n);
     distance[0]=0;
     for (i=1;i<n;i++){
