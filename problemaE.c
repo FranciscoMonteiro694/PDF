@@ -6,7 +6,7 @@
 
 /*
 1
- 
+
 7
 Z G
 D Z
@@ -22,11 +22,11 @@ Z A
 C Y
 A C
 D Z
- 
+
 2 casos de teste
- 
+
 2
- 
+
 7
 Z G
 D Z
@@ -42,7 +42,7 @@ Z A
 C Y
 A C
 D Z
- 
+
 7
 Z G
 D Z
@@ -58,11 +58,11 @@ Z A
 C Y
 A C
 D Z
- 
- 
- 
- 
- 
+
+
+
+
+
  */
 void analisa(int *array,int nCasosTeste,int iterador);
 char alfabeto[26] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I','J','K','L','M','N','O','P','Q'
@@ -81,13 +81,13 @@ int main(int argc, const char * argv[]) {
     for(i=0;i<nCasosTeste;i++){
         analisa(array,nCasosTeste,i);
     }
-    
+
     for(i=0;i<nCasosTeste;i++){
         if(array[i]==0)
             printf("NO\n");
         else
             printf("YES\n");
-        
+
         if(i!=nCasosTeste-1)
             printf("\n");
     }
@@ -132,7 +132,7 @@ void analisa(int *array,int nCasosTeste,int iterador){
     for (i=0;i<ALFA;i++){
         grafo1[i]=(int*)malloc(sizeof(int)*ALFA);
     }
-    // Para inicializar a matriz a 0
+    /* Para inicializar a matriz a 0*/
     for (i=0;i<ALFA;i++){
         memset (grafo1[i], 0, sizeof (int) * ALFA);
     }
@@ -147,7 +147,7 @@ void analisa(int *array,int nCasosTeste,int iterador){
     for (i=0;i<ALFA;i++){
         grafo2[i]=(int*)malloc(sizeof(int)*ALFA);
     }
-    // Para inicializar a matriz a 0
+    /*Para inicializar a matriz a 0*/
     for (i=0;i<ALFA;i++){
         memset (grafo2[i], 0, sizeof (int) * ALFA);
     }
@@ -155,11 +155,11 @@ void analisa(int *array,int nCasosTeste,int iterador){
         scanf(" %c %c",&aux1,&aux2);
         grafo2[indiceAlfa(aux1)][indiceAlfa(aux2)]=1;
     }
-    // Chamar a funcao floyd para os dois grafos
+    /* Chamar a funcao floyd para os dois grafos*/
     floyd(grafo1);
     floyd(grafo2);
     array[iterador]=compara(grafo1,grafo2);
-    
+
 
 }
 
@@ -179,7 +179,7 @@ int compara(int **grafo1,int **grafo2){
     int i,j;
     for(i=0;i<ALFA;i++){
         for(j=0;j<ALFA;j++){
-            // Vai falhar, imprimir NO
+            /* Vai falhar, imprimir NO*/
             if(grafo1[i][j]!=grafo2[i][j])
                 return 0;
         }
