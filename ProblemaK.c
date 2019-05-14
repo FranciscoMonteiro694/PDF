@@ -3,7 +3,7 @@
 #include <string.h>
 
 /*
-
+ 
 5
 5 1 2 3 4
 0
@@ -13,10 +13,12 @@
 0
 0
  
-*/
+ */
 int contadorCasos=0;
+int iterador=0;
 int acumulador, tempo = 0;
 int indexGlobal = 0;
+int array[300];
 void dfsAlgorithm(int **grafo, int *visited, int *dfs, int nPlaces, int index);
 void analisa(int nPlaces);
 void imprimeGrafos(int **grafo,int n);
@@ -24,20 +26,28 @@ void art(int v,int *dfs, int *low, int **grafo,int nPlaces,int *parent,int *visi
 int min(int a,int b);
 
 int main(int argc, const char * argv[]) {
-    acumulador=0;
     int nPlaces;
-    char*temp = (char*)malloc(sizeof(char)*50);
+    int i;
+    char*temp;
+    acumulador=0;
+    temp = (char*)malloc(sizeof(char)*50);
+    for(i=0;i<300;i++){
+        array[i]=-1;
+    }
     while(1){
         fgets(temp,50,stdin);
         temp[strlen(temp)-1]='\0';
-        //gets(temp);
         if(atoi(temp)==0) {
             break;
         }
         nPlaces = atoi(temp);
         analisa(nPlaces);
     }
-    printf("\n");
+    i=0;
+    while(array[i]!=-1){
+        printf("%d\n",array[i]);
+        i++;
+    }
     return 0;
 }
 void analisa(int nPlaces){
@@ -45,21 +55,26 @@ void analisa(int nPlaces){
     int i;
     char *buffer;
     char *token;
+    int *visited;
+    int *dfs;
+    int *low;
+    int *parent;
+    
     grafo=(int**)malloc(sizeof(int*)*nPlaces);
     buffer=(char*)malloc(sizeof(char)*200);
-
+    
     for (i=0;i<nPlaces;i++){
         grafo[i]=(int*)malloc(sizeof(int)*nPlaces);
         memset (grafo[i], 0, sizeof (int) * nPlaces);
     }
     
-    int *visited = (int*)malloc(sizeof(int)*nPlaces);
+    visited = (int*)malloc(sizeof(int)*nPlaces);
     memset(visited, 0, sizeof(int)*nPlaces);
-    int *dfs = (int*)malloc(sizeof(int)*nPlaces);
-    int *low = (int*)malloc(sizeof(int)*nPlaces);
-    int *parent = (int*)malloc(sizeof(int)*nPlaces);
+    dfs = (int*)malloc(sizeof(int)*nPlaces);
+    low = (int*)malloc(sizeof(int)*nPlaces);
+    parent = (int*)malloc(sizeof(int)*nPlaces);
     
-
+    
     for (i=0;i<nPlaces;i++){
         low[i] = nPlaces+1;
         dfs[i] = -1;
@@ -93,13 +108,15 @@ void analisa(int nPlaces){
     indexGlobal=0;
     art(0,dfs,low,grafo,nPlaces,parent,visited);
     /*
-    printf("Visitados\n");
-    for(i=0;i<nPlaces;i++){
-        printf("%d\n",visited[i]);
-    }
-    printf("fim\n");
-    */
-    printf("\n%d",acumulador);
+     printf("Visitados\n");
+     for(i=0;i<nPlaces;i++){
+     printf("%d\n",visited[i]);
+     }
+     printf("fim\n");
+     */
+    /*printf("\n%d",acumulador);*/
+    array[iterador]=acumulador;
+    iterador++;
     acumulador = 0;
 }
 
@@ -154,8 +171,9 @@ void dfsAlgorithm(int**grafo, int*visited, int*dfs, int nPlaces, int index){
 }
 
 void imprimeGrafos(int **grafo,int n){
-    printf("Conteudo do grafo\n");
     int i,j;
+    printf("Conteudo do grafo\n");
+    
     for (i=0;i<n;i++){
         for(j=0;j<n;j++){
             printf("%d\t",grafo[i][j]);
