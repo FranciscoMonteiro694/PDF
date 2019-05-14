@@ -12,7 +12,7 @@
 5 4 6 2
 0
 0
-
+ 
 */
 int contadorCasos=0;
 int acumulador, tempo = 0;
@@ -24,15 +24,13 @@ void art(int v,int *dfs, int *low, int **grafo,int nPlaces,int *parent,int *visi
 int min(int a,int b);
 
 int main(int argc, const char * argv[]) {
+    acumulador=0;
     int nPlaces;
     char*temp = (char*)malloc(sizeof(char)*50);
-    acumulador=0;
-
     while(1){
         gets(temp);
         if(atoi(temp)==0) {
             break;
-
         }
         nPlaces = atoi(temp);
         analisa(nPlaces);
@@ -43,12 +41,8 @@ int main(int argc, const char * argv[]) {
 void analisa(int nPlaces){
     int **grafo;
     int i;
-    int *parent;
     char *buffer;
-    int *dfs;
-    int *low;
     char *token;
-    int *visited;
     grafo=(int**)malloc(sizeof(int*)*nPlaces);
     buffer=(char*)malloc(sizeof(char)*200);
 
@@ -56,25 +50,25 @@ void analisa(int nPlaces){
         grafo[i]=(int*)malloc(sizeof(int)*nPlaces);
         memset (grafo[i], 0, sizeof (int) * nPlaces);
     }
-
-    visited = (int*)malloc(sizeof(int)*nPlaces);
+    
+    int *visited = (int*)malloc(sizeof(int)*nPlaces);
     memset(visited, 0, sizeof(int)*nPlaces);
-    dfs = (int*)malloc(sizeof(int)*nPlaces);
-    low = (int*)malloc(sizeof(int)*nPlaces);
-    parent = (int*)malloc(sizeof(int)*nPlaces);
-
+    int *dfs = (int*)malloc(sizeof(int)*nPlaces);
+    int *low = (int*)malloc(sizeof(int)*nPlaces);
+    int *parent = (int*)malloc(sizeof(int)*nPlaces);
+    
 
     for (i=0;i<nPlaces;i++){
         low[i] = nPlaces+1;
         dfs[i] = -1;
         parent[i] = -1;
     }
-
+    
     while(gets(buffer)){
         if (strcmp(buffer,"0")==0){
             break;
         }
-
+        
         /*printf("valor do buffer %s\n",buffer);*/
         token=strtok(buffer," ");
         i = atoi(token); /*inicial*/
@@ -90,7 +84,7 @@ void analisa(int nPlaces){
         fflush(stdin);
         /*imprimeGrafos(grafo, nPlaces);*/
     }
-
+    
     /*dfsAlgorithm(grafo, visited, dfs, nPlaces, 0);*/
     tempo=0;
     indexGlobal=0;
@@ -107,7 +101,6 @@ void analisa(int nPlaces){
 }
 
 void art(int v,int *dfs, int *low, int **grafo,int nPlaces,int *parent,int *visited){
-
     int j;
     int children;
     children=0;
@@ -130,7 +123,6 @@ void art(int v,int *dfs, int *low, int **grafo,int nPlaces,int *parent,int *visi
                     visited[v]=1;
                     visited[j]=1;
                 }
-
             }
             else {
                 low[v]=min(low[v],dfs[j]);
@@ -150,7 +142,7 @@ void dfsAlgorithm(int**grafo, int*visited, int*dfs, int nPlaces, int index){
     int j;
     dfs[indexGlobal++] = index+1;
     visited[index] = 1;
-
+    
     for(j= 0; j<nPlaces; j++){
         if(!visited[j] && grafo[index][j] == 1) {
             dfsAlgorithm(grafo, visited, dfs, nPlaces, j);
@@ -159,8 +151,8 @@ void dfsAlgorithm(int**grafo, int*visited, int*dfs, int nPlaces, int index){
 }
 
 void imprimeGrafos(int **grafo,int n){
-        int i,j;
     printf("Conteudo do grafo\n");
+    int i,j;
     for (i=0;i<n;i++){
         for(j=0;j<n;j++){
             printf("%d\t",grafo[i][j]);
