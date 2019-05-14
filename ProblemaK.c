@@ -12,34 +12,32 @@
 5 4 6 2
 0
 0
+ 
 */
+int contadorCasos=0;
 int acumulador, tempo = 0;
 int indexGlobal = 0;
 void dfsAlgorithm(int **grafo, int *visited, int *dfs, int nPlaces, int index);
 void analisa(int nPlaces);
 void imprimeGrafos(int **grafo,int n);
-void art(int v,int *dfs, int *low, int **grafo,int nPlaces,int *parent);
+void art(int v,int *dfs, int *low, int **grafo,int nPlaces,int *parent,int *visited);
 int min(int a,int b);
 
 int main(int argc, const char * argv[]) {
     acumulador=0;
     int nPlaces;
     char*temp = (char*)malloc(sizeof(char)*50);
-    while(1){/* Usar breaks aqui à campeão */
-        /*printf("ou seja, estou aqui certo?\n");*/
+    while(1){
         gets(temp);
-        /*printf("e deu isto: %d !\n", nPlaces);*/
         if(atoi(temp)==0) {
-            /*printf("entrei aqui portanto sai");*/
             break;
         }
         nPlaces = atoi(temp);
         analisa(nPlaces);
     }
-
+    printf("\n");
     return 0;
 }
-/* Se estrabuchar a imprimir, tentar por esta funcao a retornar int */
 void analisa(int nPlaces){
     int **grafo;
     int i;
@@ -68,11 +66,10 @@ void analisa(int nPlaces){
     
     while(gets(buffer)){
         if (strcmp(buffer,"0")==0){
-            /*printf("Fodasse\n");*/
             break;
         }
         
-        //printf("valor do buffer %s\n",buffer);
+        /*printf("valor do buffer %s\n",buffer);*/
         token=strtok(buffer," ");
         i = atoi(token); /*inicial*/
         while(1){
@@ -89,35 +86,46 @@ void analisa(int nPlaces){
     }
     
     /*dfsAlgorithm(grafo, visited, dfs, nPlaces, 0);*/
+    tempo=0;
     indexGlobal=0;
+    art(0,dfs,low,grafo,nPlaces,parent,visited);
+    /*
+    printf("Visitados\n");
     for(i=0;i<nPlaces;i++){
-        art(i,dfs,low,grafo,nPlaces,parent);
-        tempo=0;
+        printf("%d\n",visited[i]);
     }
-    /*printf("Valor do acumulador %d\n",acumulador);*/
+    printf("fim\n");
+    */
+    printf("\n%d",acumulador);
     acumulador = 0;
 }
 
-void art(int v,int *dfs, int *low, int **grafo,int nPlaces,int *parent){
+void art(int v,int *dfs, int *low, int **grafo,int nPlaces,int *parent,int *visited){
     
     int j;
     int children;
     children=0;
-    low[v]=dfs[v]=++tempo;
+    low[v]=dfs[v]=tempo++;
     /* Percorre o grafo */
     for(j=0;j<nPlaces;j++){
         if(grafo[v][j]==1){
             if(dfs[j]==-1){
                 children++;
-                parent[v]=j;
-                art(j,dfs,low,grafo,nPlaces,parent);
+                parent[j]=v;
+                art(j,dfs,low,grafo,nPlaces,parent,visited);
                 low[v]=min(low[v],low[j]);
-                if(dfs[v]==1 && dfs[j]!=2)
+                if(dfs[v] == 1 && dfs[j]!=2 && visited[v]!=1 && visited[j]!=1){
                     acumulador++;
-                if(dfs[v]!=1 && low[j]>=dfs[v])
+                    visited[v]=1;
+                    visited[j]=1;
+                }
+                if(dfs[v] != 1 && low[j]>=dfs[v] && visited[v]!=1 && visited[j]!=1){
                     acumulador++;
+                    visited[v]=1;
+                    visited[j]=1;
+                }
             }
-            else if(j!=parent[v]){
+            else {
                 low[v]=min(low[v],dfs[j]);
             }
         }
