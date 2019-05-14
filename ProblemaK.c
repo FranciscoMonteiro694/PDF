@@ -28,7 +28,9 @@ int main(int argc, const char * argv[]) {
     int nPlaces;
     char*temp = (char*)malloc(sizeof(char)*50);
     while(1){
-        gets(temp);
+        fgets(temp,50,stdin);
+        temp[strlen(temp)-1]='\0';
+        //gets(temp);
         if(atoi(temp)==0) {
             break;
         }
@@ -64,7 +66,8 @@ void analisa(int nPlaces){
         parent[i] = -1;
     }
     
-    while(gets(buffer)){
+    while(fgets(buffer,200,stdin)){
+        buffer[strlen(buffer)-1]='\0';
         if (strcmp(buffer,"0")==0){
             break;
         }
