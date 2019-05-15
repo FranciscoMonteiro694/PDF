@@ -14,6 +14,9 @@ typedef struct nodeT{
     int val;
     struct nodeT *next;
 }Queue;
+/*Estrutra queue FIFO*/
+
+/*Cria um no e devolve um ponteiro dele mesmo*/
 Queue* CriaQueue(int val){
     Queue *ponteiro;
     if ((ponteiro=malloc(sizeof(Queue)))== NULL)
@@ -22,6 +25,7 @@ Queue* CriaQueue(int val){
     ponteiro->next=NULL;
     return ponteiro;
 }
+/*adiciona um no(cria um com a funcao de criar) ao fim da fila*/
 void adicionaFim(int val,Queue* fila){
     Queue *ponteiro;
     ponteiro=fila;
@@ -30,6 +34,7 @@ void adicionaFim(int val,Queue* fila){
     }
     ponteiro->next=CriaQueue(val);
 }
+/*debug*/
 void imprimeFila(Queue* fila){
     Queue *ponteiro;
     ponteiro=fila;
@@ -39,6 +44,7 @@ void imprimeFila(Queue* fila){
     }
     printf("\n");
 }
+/*nao e usada*/
 int retiraPrimeiro(Queue* fila){
     Queue *auxF;
     int aux;
@@ -49,17 +55,12 @@ int retiraPrimeiro(Queue* fila){
     return aux;
 }
 int veCivlos(int aux,int n);
-void enqueue(int * queue,int x,int tamanho);
-int deque(int * queue,int tamanho);
-int QueueEmpty(int * queue,int tamanho);
-void printQueue(int * queue,int tamanho);
 int **grafo;
 int main(int argc, const char * argv[]) {
     int n,aux,aux2;
     int i,j;
-
+    /*recebe input*/
     scanf("%d",&n);
-
     grafo=(int**)malloc(sizeof(int*)*n);
     for (i=0;i<n;i++){
         grafo[i]=(int*)malloc(sizeof(int)*n);
@@ -67,7 +68,6 @@ int main(int argc, const char * argv[]) {
             grafo[i][j]=-1;
         }
     }
-
     for(i=0;i<n;i++){
         scanf("%d",&aux);
         for(j=0;j<aux;j++){
@@ -75,6 +75,7 @@ int main(int argc, const char * argv[]) {
             grafo[i][aux2]=10;
         }
     }
+    /*para cada no verificar se existe um ciclo(ou um caminho para ele mesmo)*/
     for(i=0;i<n;i++){
         if(veCivlos(i,n)==1){
                 printf("%d\n",i);
@@ -85,69 +86,29 @@ int main(int argc, const char * argv[]) {
 
 
 }
-void enqueue(int * queue,int x,int tamanho){
-    int i;
-    for(i=0;i<tamanho;i++){
-        if(queue[i]==-1){
-             queue[i]=x;
-             i=tamanho+2;
-        }
-    }
-    }
-int deque(int * queue,int tamanho){
-    int i,aux;
-    for(i=0;i<tamanho;i++){
-        if(queue[i]!=-1){
-            aux=queue[i];
-            queue[i]=-1;
-            return aux;
-        }
-    }
-    return -1;
-    }
-int QueueEmpty(int * queue,int tamanho){
-    int i;
-    for(i=0;i<tamanho;i++){
-        if(queue[i]!=(-1)){
-
-            return 0;
-        }
-    }
-    return 1;
-    }
-
-void printQueue(int * queue,int tamanho){
-    int i;
-    for(i=0;i<tamanho;i++){
-            printf("%d    ",queue[i]);
-        }
-    printf("\n");
-    }
-
+/*recebe o numero de vertice e o no pelo qual começar*/
+/*a fila e o essencial do bfs*/
 int veCivlos(int aux,int n){
-    int i,*visited,*queue,t;
+    int i,*visited,t;
     Queue *fila;
     visited=(int*)malloc(sizeof(int)*n);
+    /*um array para sabermos por que nos ja passamos*/
     for (i=0;i<n;i++){
         visited[i]=0;
-
     }
-    queue=(int*)malloc(sizeof(int)*n);
-    for (i=0;i<n;i++){
-        queue[i]=-1;
-
-    }
-    /*mark v*/
+    /*cria a fila e marka um no inicial como visitado*/
     visited[aux]=1;
     fila=CriaQueue(aux);
-    /*enqueue(queue,aux,n);*/
     while(fila!=NULL){
+         /*Retira o valor do inicio da fila e elemina o no(come-o)*/
          t=fila->val;
          fila=fila->next;
          for(i=0;i<n;i++){
+                /*e aqui que se ve se existe um ciclo se o no que tamos a olhar i,nos samos o t é o mesmo onde começamos*/
                 if(grafo[t][i]>0&&i==aux){
                     return 1;
                 }
+                /*se nao for visitado e houver ligaçao visitamos e metemos na fila*/
                 if(visited[i]==0&&grafo[t][i]>0){
                      visited[i]=1;
                      if(fila!=NULL){
