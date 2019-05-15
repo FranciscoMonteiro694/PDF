@@ -8,13 +8,14 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-
+/*BFs esta na dos verCiclos*/
 typedef struct nodeT *fila;
 typedef struct nodeT{
     int val;
-    int cor;
+    int cor;/*unica difere√ßa e este atributo parasaber qual a cor do no ao o tirarmos da fila*/
     struct nodeT *next;
 }Queue;
+/*Bfs*/
 Queue* CriaQueue(int val,int cor){
     Queue *ponteiro;
     if ((ponteiro=malloc(sizeof(Queue)))== NULL)
@@ -51,17 +52,15 @@ int retiraPrimeiro(Queue* fila){
     return aux;
 }
 int veBipartido(int aux,int n,int *visited,int * cores);
-void enqueue(int * queue,int x,int tamanho);
-int deque(int * queue,int tamanho);
 int QueueEmpty(int * queue,int tamanho);
-void printQueue(int * queue,int tamanho);
 int **grafo;
+
+/*Para saber que o grafo e bipartido,ou seja dividido em dois grupos,basta colorir um grafo com duas core e no final nao pode haver cores seguidas*/
 int main(int argc, const char * argv[]) {
     int n,m,aux,aux2,aux3,aux4;
     int i,j;
     int *visited,*cores;
-
-
+    /*input*/
     while(scanf("%d%d",&n,&m)!=EOF){
     grafo=(int**)malloc(sizeof(int*)*n);
     for (i=0;i<n;i++){
@@ -76,36 +75,25 @@ int main(int argc, const char * argv[]) {
         grafo[aux-1][aux2-1]=10;
         grafo[aux2-1][aux-1]=10;
     }
-     visited=(int*)malloc(sizeof(int)*n);
+    /*array para saber qual os nos/verices ja visitatos pois temos de passar por todos*/
+    visited=(int*)malloc(sizeof(int)*n);
     for (i=0;i<n;i++){
         visited[i]=0;
 
     }
-    /*queue=(int*)malloc(sizeof(int)*n);
-    for (i=0;i<n;i++){
-        queue[i]=-1;
-
-    }*/
+    /*array que nos diz qual a cor de cada vertice*/
     cores=(int*)malloc(sizeof(int)*n);
     for (i=0;i<n;i++){
         cores[i]=-1;
 
     }
-    /*for (i=0;i<n;i++){
-        for(j=0;j<n;j++){
-            printf("%d  ",grafo[i][j]);
-        }
-        printf("\n");
-    }*/
     aux4=0;
+    /*enquanto nao visitarmos todos os nos (o nome engana XD)*/
     while(QueueEmpty(visited,n)!=-1){
-           /* printf("\n\n\n");
-            printf("------Visited-----\n");
-            printQueue(visited,n);
-             printf("------Cores-----\n");
-            printQueue(cores,n);
-            printf("\n\n\n");*/
+            /*indica qual o no que ainda nao passamos*/
             aux3=QueueEmpty(visited,n);
+            /*os grafos podem tar partidos*/
+            /*ver se essa parte do grafo e bipartida*/
             aux4=aux4+veBipartido(aux3,n,visited,cores);
             if(aux4>0){
                 break;
@@ -117,49 +105,12 @@ int main(int argc, const char * argv[]) {
     else{
           printf("No\n");
     }
-   /* printf("------Visited-----\n");
-    printQueue(visited,n);
-    printf("------Cores-----\n");
-    printQueue(cores,n);*/
-   /* for(i=0;i<n;i++){
-        if(veBipartido(i,n,visited,cores)==1){
-                printf("Yes\n");
-        }
-        else{
-            printf("No\n");
-        }
-    }*/
-   /* for (i=0;i<n;i++){
-        for(j=0;j<n;j++){
-            printf("%d  ",grafo[i][j]);
-        }
-        printf("\n");
-    }*/
     }
     return 0;
 
 
 }
-void enqueue(int * queue,int x,int tamanho){
-    int i;
-    for(i=0;i<tamanho;i++){
-        if(queue[i]==-1){
-             queue[i]=x;
-             i=tamanho+2;
-        }
-    }
-    }
-int deque(int * queue,int tamanho){
-    int i,aux;
-    for(i=0;i<tamanho;i++){
-        if(queue[i]!=-1){
-            aux=queue[i];
-            queue[i]=-1;
-            return aux;
-        }
-    }
-    return -1;
-    }
+/*funcao que devolve o indice onde se encotra o primeiro 0 de um array*/
 int QueueEmpty(int * queue,int tamanho){
     int i;
     for(i=0;i<tamanho;i++){
@@ -169,36 +120,30 @@ int QueueEmpty(int * queue,int tamanho){
     }
     return -1;
     }
-
-void printQueue(int * queue,int tamanho){
-    int i;
-    for(i=0;i<tamanho;i++){
-            printf("%d    ",queue[i]);
-        }
-    printf("\n");
-    }
-
 int veBipartido(int aux,int n,int *visited,int * cores){
+    /*BFS normal com apenas mais um atributo que e a cor*/
     int i,t,corAnt;
     Queue *fila;
-    /*mark v*/
+    /*visitamos o primeiro no e metemos-o na fila e damoslhe uma cor*/
     visited[aux]=1;
     fila=CriaQueue(aux,1);
     cores[aux]=1;
-    /*enqueue(queue,aux,n);*/
     while(fila!=NULL){
+         /*retira o primeiro elemento da fila gurdamos a cor*/
          t=fila->val;
          corAnt=fila->cor;
          fila=fila->next;
          for(i=0;i<n;i++){
-                /*sera onde eu vou meter a codiÁao das cores i guees*/
+                /*Se a cor do no anterior for igual a do nosso vizinho quer dizer que nao e bipartido*/
                 if(grafo[t][i]>0&&cores[i]==corAnt){
                     return 1;
                 }
+                /*Bfs classico apenas muda a cor*/
                 if(visited[i]==0&&grafo[t][i]>0){
                      visited[i]=1;
                      if(fila!=NULL){
                         if(corAnt==1){
+                            /*dar a cor ao no que visitamos,com a cor contraria ao no anterior*/
                             cores[i]=2;
                             adicionaFim(i,2,fila);
                         }
